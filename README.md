@@ -4,7 +4,7 @@
 |---|---------|-------|-------------|
 | 15 | Talk to Your Data Building a Natural Language to SQL Generator | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1J-1kOr43vAtIYEFHD5jy7BsTqMebU4WP) | [Folder](./15_Talk_to_Your_Data_Building_a_Natural_Language_to_SQL_Generator/) |
 | 16 | Intelligent Document Automation Building a Smart OCR Bot | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1A0g52PZz_XFo4Ne9vlS5tXPGIxQi3HZd) | [Folder](./16_Intelligent_Document_Automation_Building_a_Smart_OCR_Bot/) |
-| 17 | Build Your Own Intelligent Internet Search Engine | Coming Soon | [Folder](./17_Build_Your_Own_Intelligent_Internet_Search_Engine/) |
+| 17 | Build Your Own Intelligent Internet Search Engine | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1F6mF1SJR4cxg86zlXaYN220W4NeBf_RQ) | [Folder](./17_Build_Your_Own_Intelligent_Internet_Search_Engine/) |
 | 18 | Chat with Your Knowledge Base Building a Powerful RAG Chatbot | Coming Soon | [Folder](./18_Chat_with_Your_Knowledge_Base_Building_a_Powerful_RAG_Chatbot/) |
 | 19 | Autonomous Market Analyst Building AI Agents for Deep Research | Coming Soon | [Folder](./19_Autonomous_Market_Analyst_Building_AI_Agents_for_Deep_Research/) |
 | 20 | Web Automation on Autopilot Building an AI Browser Agent | Coming Soon | [Folder](./20_Web_Automation_on_Autopilot_Building_an_AI_Browser_Agent/) |
