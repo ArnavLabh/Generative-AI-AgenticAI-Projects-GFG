@@ -1,0 +1,734 @@
+{
+  "name": "AI Newsletter Automation v1.0",
+  "nodes": [
+    {
+      "parameters": {
+        "content": "## Getting Article Details",
+        "height": 480,
+        "width": 848
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -160,
+        -336
+      ],
+      "id": "2f2d1bfb-7142-47c8-91f9-5ea79a788522",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {}
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -80,
+        -192
+      ],
+      "id": "88067c87-0057-4346-a5d1-9f7a57b8219b",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "url": "https://www.artificial-intelligence.blog/ai-news/category/news?format=rss",
+        "options": {
+          "ignoreSSL": true
+        }
+      },
+      "type": "n8n-nodes-base.rssFeedRead",
+      "typeVersion": 1.2,
+      "position": [
+        336,
+        -192
+      ],
+      "id": "d23ead20-38a9-4bf1-87d0-52a886a9c6f9",
+      "name": "RSS Read"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.limit",
+      "typeVersion": 1,
+      "position": [
+        544,
+        -192
+      ],
+      "id": "6ec74c56-e0e8-4a81-abe3-6becd362e5a3",
+      "name": "Limit"
+    },
+    {
+      "parameters": {
+        "content": "## Create ToC",
+        "height": 480,
+        "width": 352,
+        "color": 4
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        704,
+        -336
+      ],
+      "id": "e11c0027-8f2f-47ae-9892-b41538701255",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "query": "search",
+        "options": {}
+      },
+      "type": "@tavily/n8n-nodes-tavily.tavilyTool",
+      "typeVersion": 1,
+      "position": [
+        944,
+        0
+      ],
+      "id": "2cd70a1d-a761-4ead-ba81-f12ce599d7b9",
+      "name": "Search in Tavily",
+      "credentials": {
+        "tavilyApi": {
+          "id": "PCOW4NkNg0km24F4",
+          "name": "Tavily account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "## Writing Main Body",
+        "height": 480,
+        "width": 368,
+        "color": 3
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        1072,
+        -336
+      ],
+      "id": "e93df5f4-aabf-4742-b15a-e32f1c122b91",
+      "name": "Sticky Note2"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Newsletter Topic:  {{ $('Set Topic').item.json.newsletter_topic }}\nNewsletter Tone: {{ $('Set Topic').item.json.tone }}\nNewsletter Audience: {{ $('Set Topic').item.json.audience }}\nArticle Title: {{ $json.title }}\nContent Snippets:{{ $json['content:encodedSnippet'] }}",
+        "options": {
+          "systemMessage": "#Overview\nYou are an AI agent responsible for planning the sections of a newsletter by creating an engaging table of contents tailord to the newsletter's topic, tone, and target audience.\nI\n## Context\n- The newsletter will vary in topic, tone, and target audience depending on the request.\n- Your role is to use the \"tavily\" tool to search for relevant topics and craft a high-level, engaging table of contents.\n- You also get relevant AI news as the user message so also use that to find relevant information.\n- The table of contents should resonate with the target audience and encourage them to read the full newsletter.\n\n## Instructions\n1. Analyse the incoming information, including the newsletter topic, tone, and target audience details.\n2. Use the \"tavily\" tool to research relevant and trending subtopics related to the main newsletter topic.\n3. Use the given article information to find relevant and trending subtopics related to the main newsletter topic.\n4. Based on your findings, create a table of contents with high-level, engaging topics tailored to the target audience.\n5. Ensure the topics align with the newsletter's tone and are structured to maintain the reader's interest.\n6. Include brief descriptions for each section if requested.\n7. Do not make more than 6 sections\n\n## Tools\n- tavily tool for internet"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2.2,
+      "position": [
+        752,
+        -192
+      ],
+      "id": "7ce7d70a-dfef-42db-9832-a5e99908d95e",
+      "name": "Table of Contents Generator"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.output }}",
+        "options": {
+          "systemMessage": "=You are the main body writer for an AI automation newsletter aimed at  {{ $('Set Topic').item.json.audience }}.\n\nYour task is to take the provided table of contents and expand it into a polished, structured, and engaging newsletter article.\n\nWriting guidelines:\n- Write in a {{ $('Set Topic').item.json.tone }}, clear, and approachable style.\n- Each section in the table of contents should expand into 2-4 well-written paragraphs.\n- Prioritize relevance for young professionals: highlight career impact, practical use cases, and business implications.\n- Avoid jargon; when technical terms are required, explain them briefly.\n- Maintain an informative, forward-looking, and credible tone.\n- Do not include disclaimers, instructions, or meta-comments-only finished newsletter text.\n\nResearch instructions:\n- If a section would benefit from current examples, statistics, or case studies, use the Tavily tool to fetch relevant and recent AI automation news.\n- Integrate the findings naturally into the text-never list raw search results.\n- Always paraphrase and contextualize research so it flows smoothly with the rest of the newsletter.\n\nOutput requirement:\n- Deliver a complete newsletter body text, structured according to the table of contents, ready for publication."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2.2,
+      "position": [
+        1152,
+        -192
+      ],
+      "id": "2af43ab2-0c77-43ee-a02f-312fb8bb5036",
+      "name": "Main Body Writer"
+    },
+    {
+      "parameters": {
+        "query": "search",
+        "options": {}
+      },
+      "type": "@tavily/n8n-nodes-tavily.tavilyTool",
+      "typeVersion": 1,
+      "position": [
+        1328,
+        -16
+      ],
+      "id": "db9d2453-badb-42fa-9883-7331aeb36fe7",
+      "name": "Search in Tavily1",
+      "credentials": {
+        "tavilyApi": {
+          "id": "PCOW4NkNg0km24F4",
+          "name": "Tavily account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "## Image Generator",
+        "height": 480,
+        "width": 800,
+        "color": 6
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        1456,
+        -336
+      ],
+      "id": "a8ba4729-bbb6-472d-ab64-1fe2a8b46534",
+      "name": "Sticky Note3"
+    },
+    {
+      "parameters": {
+        "content": "## Finalizing the Newsletter",
+        "height": 480,
+        "width": 1424,
+        "color": 5
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        2288,
+        -336
+      ],
+      "id": "2417a9be-3724-4923-a747-7dd686292f28",
+      "name": "Sticky Note4"
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "models/gemini-2.5-flash",
+          "mode": "list",
+          "cachedResultName": "models/gemini-2.5-flash"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "=You are the image prompt writer for an AI automation newsletter.\nYour role is to take the newsletter's title and main body text and create a clear, descriptive image prompt suitable for an AI image generation model.\n\nGuidelines:\n- Always capture the main theme of the newsletter (AI, automation, future of work, career impact, technology, etc.).\n- Write the prompt as a vivid but concise visual description of a single scene.\n- Use a professional, modern, and clean visual style that fits a technology/business newsletter.\n- Avoid text in images (no words, letters, or logos in the prompt).\n- Prefer imagery that includes symbolic or conceptual elements (e.g. \"a professional standing confidently with digital AI elements around them\" rather than \"clipart of AI\").\n- If relevant, suggest a style (e.g. digital illustration, modern flat design, photorealistic, futuristic minimalism).\n- Do not reference the newsletter text directly (e.g. don't say \"this newsletter says...\"), only extract its themes.\n- Always output a single, well-formed image prompt that is ready to be used by an AI image generator.\n\nYour output must be only the image prompt, nothing else.\nHere is the content for which you need to generate the prompt:\n {{ $json.output }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.googleGemini",
+      "typeVersion": 1,
+      "position": [
+        1504,
+        -192
+      ],
+      "id": "304c43f0-0ed8-4ac5-ba81-9a1af72e6d5a",
+      "name": "Image Prompt Generator",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "kd8lLdi5yF7whSZF",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "image",
+        "modelId": {
+          "__rl": true,
+          "value": "models/gemini-2.0-flash-preview-image-generation",
+          "mode": "list",
+          "cachedResultName": "models/gemini-2.0-flash-preview-image-generation"
+        },
+        "prompt": "={{ $json.content.parts[0].text }}",
+        "options": {
+          "sampleCount": 1,
+          "binaryPropertyOutput": "image"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.googleGemini",
+      "typeVersion": 1,
+      "position": [
+        1856,
+        -192
+      ],
+      "id": "4693d5fc-5b4b-4c7e-bccb-f08646706a94",
+      "name": "Image Generator",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "kd8lLdi5yF7whSZF",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "query": "search",
+        "options": {}
+      },
+      "type": "@tavily/n8n-nodes-tavily.tavilyTool",
+      "typeVersion": 1,
+      "position": [
+        2896,
+        0
+      ],
+      "id": "334ecde1-e65d-4039-8166-d2fa7d9aa786",
+      "name": "Search in Tavily2",
+      "credentials": {
+        "tavilyApi": {
+          "id": "PCOW4NkNg0km24F4",
+          "name": "Tavily account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.output }}",
+        "options": {
+          "systemMessage": "You are the fact checker for an AI automation newsletter.\nYour role is to carefully review the provided newsletter draft and verify the accuracy of all claims, statistics, examples, and references.\n\nInstructions:\n- Use the Tavily search tool to confirm or correct information when needed.\n- If a fact cannot be verified, replace it with a safe, accurate alternative or rephrase it to remain truthful without speculation.\n- Ensure all numbers, percentages, case studies, and references are correct and up to date.\n- Do not invent sources or details.\n- Preserve the original structure, tone, and style of the text. Make only factual corrections, not stylistic edits.\n- Remove any exaggerated or unsupported statements.\n- Keep the output clean and ready for final editing.\n\nYour output must be a fact-checked version of the newsletter draft, maintaining its flow and readability while ensuring accuracy."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2.2,
+      "position": [
+        2688,
+        -192
+      ],
+      "id": "626e2cf7-f196-4ba0-8e65-034a9fbded61",
+      "name": "Fact Checker"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Newsletter Body: {{ $('Main Body Writer').item.json.output }}\nAdd the following url for the image: {{ $json.thumbnailLink.substring(0, $json.thumbnailLink.length - 4) }}. This is a public google drive link.",
+        "options": {
+          "systemMessage": "You are the final content editor and formatter for an AI automation newsletter that will be sent by email.\n\nReturn EXACTLY ONE valid HTML document and NOTHING ELSE.\n\n  - Must start with `<!DOCTYPE html>` and end with `</html>`.\n  - Inline CSS only. No external styles, fonts, or scripts.\n  - Structure: preheader (hidden), H1 title, short intro, multiple sections (H2 + 2-4 paragraphs, lists if helpful), optional CTA button, footer.\n  - Keep it human, warm, professional. Improve flow and readability, do not add new facts.\n  - Width 600px centered. System font stack. H1 \\~30px bold; H2 \\~22px bold; body 16px, line-height \\~1.7.\n  - Links underlined; CTA is a table-based button (email-safe).\n  - No meta-commentary. Output only the final HTML.\n\nTEMPLATE (fill with the supplied draft's title/sections; adapt section count as needed):\n\n```html\n<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n    <meta charset=\"UTF-8\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n    <title>Newsletter</title>\n</head>\n<body style=\"margin:0;padding:0;background:#f6f7f9;\">\n    <table role=\"presentation\" width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\">\n        <tr>\n            <td align=\"center\" style=\"padding:20px 12px;\">\n                <table role=\"presentation\" width=\"600\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" style=\"width:100%;max-width:600px;background:#ffffff;border-radius:8px;\">\n                    <tr>\n                        <td style=\"padding:24px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-serif;color:#0f172a;\">\n                            <h1 style=\"margin:0 0 8px 0;font-size:30px;line-height:1.25;font-weight:800;\">\n                                </h1>\n                            <p style=\"margin:0 0 18px 0;font-size:16px;line-height:1.7;color:#334155;\">\n                                </p>\n                            <div style=\"margin:0 0 16px 0;\">\n                                <img src=\"IMAGE_BINARY_DATA\"\n                                     alt=\"Newsletter header image\"\n                                     width=\"600\"\n                                     style=\"display:block;width:100%;max-width:600px;height:auto;border:0;outline:none;text-decoration:none;border-radius:8px;\">\n                            </div>\n\n                            <h2 style=\"margin:18px 0 8px 0;font-size:22px;line-height:1.35;font-weight:700;color:#111827;\">\n                                </h2>\n                            <p style=\"margin:0 0 12px 0;font-size:16px;line-height:1.7;color:#374151;\">\n                                </p>\n                            <p style=\"margin:0 0 12px 0;font-size:16px;line-height:1.7;color:#374151;\">\n                                </p>\n                            <ul style=\"margin:0 0 12px 18px;padding:0;color:#374151;font-size:16px;line-height:1.7;\">\n                                <li></li>\n                                <li></li>\n                            </ul>\n                            <p style=\"margin:16px 0 0 0;\">\n                                <a href=\"#\" style=\"display:inline-block;padding:12px 18px;font-size:15px;font-weight:700;color:#ffffff;background:#2563eb;text-decoration:none;border-radius:6px;\">\n                                    Read more\n                                </a>\n                            </p>\n\n                            <hr style=\"border:none;border-top:1px solid #e5e7eb;margin:20px 0 12px 0;\">\n                            <p style=\"margin:0 0 6px 0;font-size:12px;line-height:1.6;color:#6b7280;\">\n                                You're receiving this because you subscribed to our AI newsletter.\n                            </p>\n                            <p style=\"margin:0;font-size:12px;line-height:1.6;color:#6b7280;\">\n                                Unsubscribe: <a href=\"#\" style=\"color:#6b7280;text-decoration:underline;\">link</a>\n                            </p>\n                        </td>\n                    </tr>\n                </table>\n            </td>\n        </tr>\n    </table>\n</body>\n</html>\n```"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2.2,
+      "position": [
+        2336,
+        -192
+      ],
+      "id": "9afbdd7d-dff5-4336-82a1-7d411210f73c",
+      "name": "Content Editor"
+    },
+    {
+      "parameters": {
+        "inputDataFieldName": "image",
+        "name": "image.png",
+        "driveId": {
+          "__rl": true,
+          "value": "My Drive",
+          "mode": "list",
+          "cachedResultName": "My Drive",
+          "cachedResultUrl": "https://drive.google.com/drive/my-drive"
+        },
+        "folderId": {
+          "__rl": true,
+          "value": "16G040bR2F0drNd5VmY5wG-UUu4v4U8yg",
+          "mode": "list",
+          "cachedResultName": "n8n-letter",
+          "cachedResultUrl": "https://drive.google.com/drive/folders/16G040bR2F0drNd5VmY5wG-UUu4v4U8yg"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        2064,
+        -192
+      ],
+      "id": "ad9569e4-66b0-46d5-a7e1-e010e86f0a4b",
+      "name": "Upload file",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "GQt5utt7Pk5IYCFo",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "language": "python",
+        "pythonCode": "# Loop over input items and add a new field called 'myNewField' to the JSON of each one\nfor item in _input.all():\n  item.json.newsletter_topic = \"AI Tools for Students\"\n  item.json.tone = \"Professional\"\n  item.json.audience = \"Young Adults\"\nreturn _input.all()"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        128,
+        -192
+      ],
+      "id": "84c9c4bd-5d6f-43db-864c-54e8c029d033",
+      "name": "Set Topic"
+    },
+    {
+      "parameters": {
+        "sendTo": "sampurnrattan@gmail.com",
+        "subject": "={{ $json.output }}",
+        "message": "={{ $('Fact Checker').item.json.output }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        3472,
+        -192
+      ],
+      "id": "c1adfa98-3aea-4f2f-b6bf-2234edb625fe",
+      "name": "Send a message",
+      "webhookId": "8fa983d7-4488-4382-b101-58ba7b5addb5",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "II7xBrFxdojLFIY0",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Analyze the following output, and generate a catchy, engaging title:\n {{ $json.output }}.\nOnly provide the title, and the title only. Do not provide anything else.",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2.2,
+      "position": [
+        3072,
+        -192
+      ],
+      "id": "4e7e50bb-2e8f-4180-86b2-e110ce9e16f4",
+      "name": "Title Generator"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        2320,
+        0
+      ],
+      "id": "7f6b891a-21da-467b-b605-f349365183ea",
+      "name": "Google Gemini - Content Editor",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "kd8lLdi5yF7whSZF",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        2672,
+        0
+      ],
+      "id": "a4dcccaa-a661-4b36-9a71-8b18a10d04e8",
+      "name": "Google Gemini - Fact Checker",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "kd8lLdi5yF7whSZF",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        3072,
+        0
+      ],
+      "id": "b48c25d0-68ee-466f-85aa-f7edd9234f8d",
+      "name": "Google Gemini - Title Generator",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "kd8lLdi5yF7whSZF",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        1136,
+        -16
+      ],
+      "id": "cf772908-85bf-49f6-98be-bc3f9c173d23",
+      "name": "Google Gemini - Main Body",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "kd8lLdi5yF7whSZF",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        752,
+        0
+      ],
+      "id": "1722f618-de65-4664-a139-20515d987e04",
+      "name": "Google Gemini - ToC",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "kd8lLdi5yF7whSZF",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Set Topic",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "RSS Read": {
+      "main": [
+        [
+          {
+            "node": "Limit",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Limit": {
+      "main": [
+        [
+          {
+            "node": "Table of Contents Generator",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Search in Tavily": {
+      "ai_tool": [
+        [
+          {
+            "node": "Table of Contents Generator",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Table of Contents Generator": {
+      "main": [
+        [
+          {
+            "node": "Main Body Writer",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Search in Tavily1": {
+      "ai_tool": [
+        [
+          {
+            "node": "Main Body Writer",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Main Body Writer": {
+      "main": [
+        [
+          {
+            "node": "Image Prompt Generator",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Image Prompt Generator": {
+      "main": [
+        [
+          {
+            "node": "Image Generator",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Image Generator": {
+      "main": [
+        [
+          {
+            "node": "Upload file",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Search in Tavily2": {
+      "ai_tool": [
+        [
+          {
+            "node": "Fact Checker",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fact Checker": {
+      "main": [
+        [
+          {
+            "node": "Title Generator",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Content Editor": {
+      "main": [
+        [
+          {
+            "node": "Fact Checker",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Upload file": {
+      "main": [
+        [
+          {
+            "node": "Content Editor",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set Topic": {
+      "main": [
+        [
+          {
+            "node": "RSS Read",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Title Generator": {
+      "main": [
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini - Content Editor": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Content Editor",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini - Fact Checker": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Fact Checker",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini - Title Generator": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Title Generator",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini - Main Body": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Main Body Writer",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini - ToC": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Table of Contents Generator",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "fb2eeabf-c0e8-4fa7-b219-65048ca60ddf",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "79ae80ec52370a4d3c1e92043a6fd463630bd1a549039b0bda784abf7230ee3a"
+  },
+  "id": "I5IjPsYBPQo3P4BZ",
+  "tags": []
+}

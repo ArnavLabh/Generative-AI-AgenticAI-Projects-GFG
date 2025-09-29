@@ -7,8 +7,8 @@
 | 17 | Build Your Own Intelligent Internet Search Engine | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1F6mF1SJR4cxg86zlXaYN220W4NeBf_RQ) | [Folder](./17_Build_Your_Own_Intelligent_Internet_Search_Engine/) |
 | 18 | Chat with Your Knowledge Base Building a Powerful RAG Chatbot | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1lznsN8--_fowqqDaFsk0tMbyh6E0fHux) | [Folder](./18_Chat_with_Your_Knowledge_Base_Building_a_Powerful_RAG_Chatbot/) |
 | 19 | Autonomous Market Analyst Building AI Agents for Deep Research | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1chtVzAMTZIehiPEU9raZJhGWa9Fy8bAn) | [Folder](./19_Autonomous_Market_Analyst_Building_AI_Agents_for_Deep_Research/) |
-| 20 | Web Automation on Autopilot Building an AI Browser Agent | Coming Soon | [Folder](./20_Web_Automation_on_Autopilot_Building_an_AI_Browser_Agent/) |
-| 21 | Building an AI Powered Newsletter Pipeline on n8n | Coming Soon | [Folder](./21_Building_an_AI_Powered_Newsletter_Pipeline_on_n8n/) |
+| 20 | Web Automation on Autopilot Building an AI Browser Agent | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1NDnXE_hz2lS03Dn35M1ciZ1R05pnyk8t) | [Folder](./20_Web_Automation_on_Autopilot_Building_an_AI_Browser_Agent/) |
+| 21 | Building an AI Powered Newsletter Pipeline on n8n | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/19nJIkSdFszBGw9ZqjRezaygmpEF0fY5M) | [Folder](./21_Building_an_AI_Powered_Newsletter_Pipeline_on_n8n/) |
 
 ## Portfolio Overview
 
